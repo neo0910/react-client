@@ -1,12 +1,14 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import apiService, {Abortable} from '../../app/api';
 
-export interface UsersState {
+export type User = Record<string, unknown>;
+
+export type UsersState = {
     fetchUsers: {
-        data: Record<string, unknown>[];
+        data: User[];
         isLoading: boolean;
     };
-}
+};
 
 const initialState: UsersState = {
     fetchUsers: {
@@ -17,10 +19,13 @@ const initialState: UsersState = {
 
 const API_URL = 'users';
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async ({signal}: Abortable) => {
-    const {data} = await apiService.get<any[]>(API_URL, {signal});
-
-    return data;
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async ({signal}: Abortable, thunkApi) => {
+    try {
+        const {data} = await apiService.get<User[]>(API_URL, {signal});
+        return data;
+    } catch (e) {
+        return thunkApi.rejectWithValue((e as Error).message);
+    }
 });
 
 export const counterSlice = createSlice({
@@ -32,7 +37,7 @@ export const counterSlice = createSlice({
             .addCase(fetchUsers.pending, (state) => {
                 state.fetchUsers.isLoading = true;
             })
-            .addCase(fetchUsers.fulfilled, (state, {payload}) => {
+            .addCase(fetchUsers.fulfilled, (state, {payload}: PayloadAction<User[]>) => {
                 state.fetchUsers.isLoading = false;
                 state.fetchUsers.data = payload;
             })
