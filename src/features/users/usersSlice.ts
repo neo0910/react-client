@@ -1,7 +1,12 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import apiService, {Abortable} from '../../app/api';
 
-export type User = Record<string, unknown>;
+export type User = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    age: number;
+};
 
 export type UsersState = {
     fetchUsers: {
@@ -17,7 +22,7 @@ const initialState: UsersState = {
     },
 };
 
-const API_URL = 'users';
+const API_URL = '/api/users';
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async ({signal}: Abortable, thunkApi) => {
     try {

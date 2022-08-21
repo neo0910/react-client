@@ -23,8 +23,8 @@ const Users: React.FC = () => {
     return (
         <ul>
             {data.map((user) => (
-                <li key={user.id as string} className={styles.row}>
-                    {user.name as string}
+                <li key={user.id} className={styles.row}>
+                    {`${user.firstName} ${user.lastName}`}
                 </li>
             ))}
         </ul>
