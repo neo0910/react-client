@@ -17,7 +17,7 @@ export type UsersState = {
 
 const initialState: UsersState = {
     fetchUsers: {
-        data: [],
+        data: [{id: 1, firstName: 'Denis', lastName: 'Kalenik', age: 30}],
         isLoading: false,
     },
 };
@@ -36,7 +36,11 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async ({signal}: 
 export const counterSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {},
+    reducers: {
+        setIsLoading(state) {
+            state.fetchUsers.isLoading = !state.fetchUsers.isLoading
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchUsers.pending, (state) => {
@@ -51,5 +55,7 @@ export const counterSlice = createSlice({
             });
     },
 });
+
+export const {setIsLoading} = counterSlice.actions
 
 export default counterSlice.reducer;
